@@ -1,62 +1,79 @@
-![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/git3wid/6bf2099ffe34b1daa3e2c00571cc28f7/raw/986d482881eed180205bf967b286ecbc4ad83060/onyx-coverage-badge.json)
-# ONYX
+# Yaku Helm Chart
 
-Onyx interprets qg-config.yaml v1 files and performs the tasks specified therein.
+This repository contains the Helm chart for Yaku. It consists of the subcharts for the following components:
+- Argo Workflows
+- Minio
+- Core-API
+- Yaku-UI
 
-## Usage
+## Release Process
 
-```bash
-make build
-./bin/onyx
-```
+### Purpose of the Release
 
-### Environment variables
+Before releasing a new version, the purpose of the release should be considered. It is one of the following:
 
-Instead of passing flags to the CLI, you can also set environment variables. E.g. `ONYX_LOG_LEVEL=debug` will set the log level to debug. The Prefix is always `ONYX_` followed by the flag name in uppercase with underscores instead of dashes.
+1. Chart related changes
 
-The order of precedence for configuration sources is as follows:
-- Flags
-- Environment variables
-- Config file
-- Default values
+   For this, we create a new patch increment version of the chart.
 
-### Migrate a existing qg-config.yaml
+   This release is done after chart changes that are required for our deployments or chart changes in general that the customer will use in the next customer release.
 
-```bash
-./bin/onyx migrate path/to/qg-config.yaml --output path/to/new-qg-config.yaml
-### example
-./bin/onyx migrate ./examples/qg-config.yaml --output ./examples/new-qg-config.yaml
-```
-
-### Get a schema for the qg-config.yaml
-
-```bash
-./bin/onyx schema
-```
-
-### Execute a qg-config.yaml
-
-```bash
-./bin/onyx exec path/to/folder 
-### example
-./bin/onyx exec ./examples
-```
-
-If you don't provide a path, the current working directory will be used. The folder must contain a `qg-config.yaml`, `.vars` and `.secrets` file. All of them can be changed via the flags `--config-name`, `--vars-name` and `--secrets-name` (see also `./bin/onyx exec --help`)
-
-The `.vars` and `.secrets` files are json files which follow this format:
-
-```
-{
-  "KEY1": "VALUE",
-  "KEY2": "file://path/to/file",
-  "KEY3": "LINE1\\nLINE1\\nLINE3"
-}
-```
-
-The file referenced with the `file://` prefix will be read and the content will be used as the value for the key.
+   We keep track of these chart related changes in [HELM_CHANGELOG.md file](./HELM_CHANGELOG.md). So when creating a new version, update that file with your changes.
 
 
-## Development
+2. Official release version for customers
 
-[DEVELOPMENT.md](DEVELOPMENT.md)
+   For this, we create a new minor (or can be major) increment version of the chart and generate the release note of Yaku components (api, ui, onyx and apps).
+
+
+### Release a New Chart Version
+
+Based on the purpose of the new version, follow the steps below to release a new version of the chart:
+
+
+1. The *Create release PR* workflow should be manually triggered with the following inputs:
+   - `version_inc`:
+
+      The version increment type, which can be one of the following: `major`, `minor`, `patch`.
+      Default is `patch`. This means you don't need to enter components versions and no release notes will be created.
+      If you are releasing a customer version, choose `minor` or `major`based on corresponding Yaku components changes.
+   - `core-api-version`: 
+
+      The version of yaku-core-api to be included in the new release.
+      Mandatory for customer releases.
+   - `core-version`: 
+   
+      The version of yaku-core image to be included in the new release.
+      Mandatory for customer releases.
+
+   - `ui-version`: 
+   
+      The version of the yaku-ui to be included in the new release.
+      Mandatory for customer releases.
+
+   If it is a customer release, a changelog will be created with all the changes from all included components. A PR will be created with the changelog and the updated versions.
+
+   **IMPORTANT:** Before merging the PR, ensure it is polished and presentable.
+
+   If it is an internal release, a PR will be created with the new version.
+
+   
+
+2. Once the created PR is merged, the *Release chart* workflow should be manually triggered with the following inputs:
+   - `version`: The version of the Helm chart to be released, as found in the `Chart.yaml` file.
+   - `overwrite`: If set to `true`, the workflow will overwrite the existing Helm chart with the same version in ACR.
+
+3. Once the workflow is completed and the GitHub release is created, the *Publish chart* workflow will be triggered automatically. This workflow will publish the Helm chart to ACR.
+
+A diagram of the release process can be found [in the wiki](https://inside-docupedia.bosch.com/confluence/display/GROWPAT/Release+of+on-prem+deployment).
+
+### Pull Helm Chart from ACR
+
+1. Get access to ACR and login
+2. Pull the helm chart, e.g. with:
+   ```sh
+   helm pull oci://growpatcr.azurecr.io/helm/yaku --version <your-version>
+   ```
+
+To continue, you can find some more documentation [here](./documentation).
+
