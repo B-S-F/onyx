@@ -22,12 +22,13 @@ import (
 	"github.com/B-S-F/onyx/pkg/schema"
 	"github.com/B-S-F/onyx/pkg/tempdir"
 	"github.com/B-S-F/onyx/pkg/transformer"
-	"github.com/B-S-F/onyx/pkg/v2/config"
 	v2 "github.com/B-S-F/onyx/pkg/v2/config"
 	model "github.com/B-S-F/onyx/pkg/v2/model"
+	"github.com/B-S-F/onyx/pkg/v2/orchestrator"
 	replacerV2 "github.com/B-S-F/onyx/pkg/v2/replacer"
 	appV2 "github.com/B-S-F/onyx/pkg/v2/repository/app"
 	registryV2 "github.com/B-S-F/onyx/pkg/v2/repository/registry"
+	resultV2 "github.com/B-S-F/onyx/pkg/v2/result"
 	transformerV2 "github.com/B-S-F/onyx/pkg/v2/transformer"
 	"github.com/B-S-F/onyx/pkg/workdir"
 
@@ -50,6 +51,11 @@ var (
 	ROOT_WORK_DIRECTORY = tempdir.GetPath("evidences")
 	APP_DIRECTORY       = tempdir.GetPath("apps")
 )
+
+func OverrideDirectoriesForTest(path string) {
+	ROOT_WORK_DIRECTORY = path + "/evidences"
+	APP_DIRECTORY = path + "/apps"
+}
 
 type exec struct {
 	wdUtils         workdir.Utilizer
@@ -130,7 +136,7 @@ func Exec(execParams parameter.ExecutionParameter) error {
 		return e.execPlanV1(execPlan, vars, secrets)
 
 	case "v2":
-		configV2, ok := cfg.(*config.Config)
+		configV2, ok := cfg.(*v2.Config)
 		if !ok {
 			return errors.Errorf("provided config for version '%s' is of unexpected type '%T'", version, configFile)
 		}
@@ -140,7 +146,7 @@ func Exec(execParams parameter.ExecutionParameter) error {
 			return err
 		}
 
-		return e.execPlanV2(ep)
+		return e.execPlanV2(ep, secrets)
 	default:
 		return errors.Errorf("unsupported version '%s'", version)
 	}
@@ -173,9 +179,40 @@ func (e *exec) execPlanV1(ep *configuration.ExecutionPlan, vars map[string]strin
 	return nil
 }
 
-func (e *exec) execPlanV2(_ *model.ExecutionPlan) error {
-	// TODO: implement this
-	return errors.New("v2 execution not implemented yet")
+func (e *exec) execPlanV2(ep *model.ExecutionPlan, secrets map[string]string) error {
+	e.logger.Info("[ RUN EXECUTION PLAN ]")
+	orchestrator := orchestrator.New(ROOT_WORK_DIRECTORY, e.execParams.Strict, e.execParams.CheckTimeout, e.logger)
+	runResult, err := orchestrator.Run(ep.ManualChecks, ep.AutopilotChecks, ep.Env, secrets)
+	if err != nil {
+		return errors.Wrap(err, "error executing execution plan")
+	}
+	resFilePath := filepath.Join(ROOT_WORK_DIRECTORY, RESULT_FILE)
+	resCreator := resultV2.New(e.logger)
+	createdResult, err := resCreator.Create(*ep, runResult)
+	if err != nil {
+		return errors.Wrap(err, "error creating execution result")
+	}
+	err = resCreator.WriteResultFile(*createdResult, resFilePath)
+	if err != nil {
+		return errors.Wrap(err, "error writing result file")
+	}
+	if ep.Finalize != nil {
+		e.logger.Info("[ RUN FINALIZER ]")
+		finalizeRes, err := orchestrator.RunFinalizer(*ep.Finalize, ep.Env, secrets)
+		if err != nil {
+			return errors.Wrap(err, "error running finalizer")
+		}
+		resCreator.AppendFinalizeResult(createdResult, *finalizeRes, *ep.Finalize)
+		err = resCreator.WriteResultFile(*createdResult, resFilePath)
+		if err != nil {
+			return errors.Wrap(err, "error writing result file")
+		}
+	}
+	err = e.provideResultFiles()
+	if err != nil {
+		return errors.Wrap(err, "error providing result files")
+	}
+	return nil
 }
 
 func (e *exec) prepareRootFolder(rootFolder, inputFolder string) error {
