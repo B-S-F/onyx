@@ -206,5 +206,7 @@ chapters:
                                   fulfilled: true
                                   justification: justified
                             configFiles:
-                                - cfg.yaml`
+                                - cfg.yaml
+                            logs:
+                                - log1`
 }

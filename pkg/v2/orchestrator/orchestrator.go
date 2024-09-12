@@ -3,6 +3,7 @@ package orchestrator
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"github.com/B-S-F/onyx/pkg/runner"
 	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/B-S-F/onyx/pkg/workdir"
+	errs "github.com/pkg/errors"
 	"github.com/spf13/afero"
 	"go.uber.org/zap"
 )
@@ -200,4 +202,22 @@ func (o *Orchestrator) runAutopilots(autopilots []model.AutopilotCheck, env, sec
 	}
 
 	return runs, nil
+}
+
+func (o *Orchestrator) RunFinalizer(finalize model.Finalize, env, secrets map[string]string) (*model.FinalizeResult, error) {
+	o.logger.Info("finalizer started")
+	o.logger.Debug("finalizer config", zap.Any("finalizer", finalize))
+	logger := logger.NewAutopilot(logger.Settings{
+		Secrets: secrets,
+		File:    filepath.Join(o.rootWorkDir, "finalizer.log"),
+	})
+	defer logger.Flush()
+	defer logger.ToFile()
+	wdUtils := workdir.NewUtils(afero.NewOsFs())
+	runner := runner.NewSubprocess(logger)
+	result, err := finalize.Execute(wdUtils, o.rootWorkDir, env, secrets, *logger, o.timeout, runner)
+	if err != nil {
+		return nil, errs.Wrap(err, "failed to run finalize execute")
+	}
+	return result, nil
 }

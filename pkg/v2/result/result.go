@@ -156,8 +156,25 @@ type Evaluation struct {
 	Reason string `yaml:"reason" json:"reason" jsonschema:"required"`
 	// Results of the autopilot
 	Results []EvaluationResult `yaml:"results,omitempty" json:"results" jsonschema:"optional"`
+	// TODO: logs are not yet implemented in a structured format
+	// Structured logs of the evaluation, example:
+	// - '{"source": "stdout", "json": {"result":{"criterion":"Fixed RTC ticket with ID 1588653 must be risk assessed","fulfilled":false,"justification":"Please type the appropriate risk assessment for RTC Ticket with ID 1588653.","metadata":{"Id":1588653,"test-json":{"key":"value"}}}}}'
+	// - '{"source": "stdout", "text": "log message"}'
+	// - '{"source": "stdout", "json": {"warning": "Your config file will be deprecated next month"}}'
+	// - '{"source": "stdout", "json": {"message": "I am a message"}}'
+	// - '{"source": "stderr", "text": "some error log"}'
+	Logs []string `yaml:"logs,omitempty" json:"logs" jsonschema:"required"`
+	// TODO: will be removed after implementing structured logs
+	// Error logs from the execution of the evaluation
+	ErrorLogs []string `yaml:"errorLogs,omitempty" json:"errorLogs" jsonschema:"optional"`
+	// Warning messages of the evaluation execution, derived from the generated structured logs
+	Warnings []string `yaml:"warnings,omitempty" json:"warnings" jsonschema:"optional"`
+	// General info messages of the evaluation execution, derived from the generated structured logs
+	Messages []string `yaml:"messages,omitempty" json:"messages" jsonschema:"optional"`
 	// Configuration files of the evaluation
 	ConfigFiles []string `yaml:"configFiles,omitempty" json:"configFiles" jsonschema:"optional"`
+	// Exit code of the evaluation
+	ExitCode int `yaml:"exitCode,omitempty" json:"exitCode" jsonschema:"required"`
 }
 
 // Contains one of potentially many results reported by an autopilot
