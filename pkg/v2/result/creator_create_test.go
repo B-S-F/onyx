@@ -693,6 +693,8 @@ func simpleAutomationChapter() *Chapter {
 									Metadata:      nil,
 								},
 							},
+							Logs:     []string{"log1"},
+							ExitCode: 0,
 						},
 					},
 				},

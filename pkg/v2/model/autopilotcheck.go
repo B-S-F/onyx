@@ -144,6 +144,7 @@ func (item *AutopilotCheck) Execute(wdUtils workdir.Utilizer, rootWorkDir string
 		}
 	}
 	specialEnv := map[string]string{
+		"PATH":                  sysPATH,
 		"EVALUATOR_INPUT_FILES": strings.Join(evalInputFiles, strconv.QuoteRune(os.PathListSeparator)),
 		"EVALUATOR_RESULT_FILE": filepath.Join(evalDir.String(), "result.json"),
 	}

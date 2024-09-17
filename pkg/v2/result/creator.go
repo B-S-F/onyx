@@ -188,6 +188,9 @@ func (c *Creator) addAutopilotResult(chapters map[string]*Chapter, a model.Autop
 				Reason:      a.Result.EvaluateResult.Reason,
 				ConfigFiles: evaluationCfgs,
 				Results:     evaluationResults,
+				Logs:        a.Result.EvaluateResult.Logs,
+				ErrorLogs:   a.Result.EvaluateResult.ErrLogs,
+				ExitCode:    a.Result.EvaluateResult.ExitCode,
 			},
 		}
 	}
