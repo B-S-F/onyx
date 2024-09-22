@@ -8,6 +8,7 @@ import (
 	"github.com/B-S-F/onyx/pkg/logger"
 	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 )
 
@@ -72,8 +73,18 @@ func TestCreator_AppendFinalizeResult(t *testing.T) {
 	}{
 		"should_append_finalize_result_to_result_object": {
 			args: args{
-				finalizeResult: model.FinalizeResult{Logs: []string{"log1"}, ExitCode: 0, OutputPath: "out.json"},
-				finalize:       model.Finalize{Env: map[string]string{"env": "value"}, Configs: map[string]string{"cfg": "content"}, Run: "echo 'hello world' > out.json"},
+				finalizeResult: model.FinalizeResult{
+					Logs: []model.LogEntry{
+						{Source: "stdout", Text: "log1"},
+						{Source: "stdout", Json: map[string]interface{}{"warning": "this is a warning"}},
+						{Source: "stdout", Json: map[string]interface{}{"warning": "another warning"}},
+						{Source: "stdout", Json: map[string]interface{}{"message": "this is a message"}},
+						{Source: "stderr", Text: "some error"},
+					},
+					ExitCode:   0,
+					OutputPath: "out.json",
+				},
+				finalize: model.Finalize{Env: map[string]string{"env": "value"}, Configs: map[string]string{"cfg": "content"}, Run: "echo 'hello world' > out.json"},
 				res: &Result{
 					Metadata:      Metadata{Version: "v2"},
 					Header:        Header{Version: "1.0", Name: "test"},
@@ -95,7 +106,18 @@ func TestCreator_AppendFinalizeResult(t *testing.T) {
 				},
 				Statistics: Statistics{CountChecks: 2, CountAutomatedChecks: 1, CountManualChecks: 1, PercentageDone: 100, PercentageAutomated: 50},
 				Finalize: &Finalize{
-					Logs:        []string{"log1"},
+					Logs: []string{
+						"{\"source\":\"stdout\",\"text\":\"log1\"}",
+						"{\"source\":\"stdout\",\"json\":{\"warning\":\"this is a warning\"}}",
+						"{\"source\":\"stdout\",\"json\":{\"warning\":\"another warning\"}}",
+						"{\"source\":\"stdout\",\"json\":{\"message\":\"this is a message\"}}",
+						"{\"source\":\"stderr\",\"text\":\"some error\"}",
+					},
+					Warnings: []string{
+						"this is a warning",
+						"another warning",
+					},
+					Messages:    []string{"this is a message"},
 					ConfigFiles: []string{"cfg"},
 					ExitCode:    0,
 				},
@@ -105,7 +127,8 @@ func TestCreator_AppendFinalizeResult(t *testing.T) {
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
 			c := &Creator{logger: logger.NewAutopilot()}
-			c.AppendFinalizeResult(tt.args.res, tt.args.finalizeResult, tt.args.finalize)
+			err := c.AppendFinalizeResult(tt.args.res, tt.args.finalizeResult, tt.args.finalize)
+			require.NoError(t, err)
 
 			assert.Equal(t, tt.want, tt.args.res)
 		})
@@ -167,7 +190,16 @@ chapters:
                                   id: fetch1
                                   depends: []
                                   logs:
-                                    - log1
+                                    - '{"source":"stdout","text":"log1"}'
+                                    - '{"source":"stdout","json":{"warning":"this is a warning"}}'
+                                    - '{"source":"stdout","json":{"warning":"another warning"}}'
+                                    - '{"source":"stdout","json":{"message":"this is a message"}}'
+                                    - '{"source":"stderr","text":"some error"}'
+                                  warnings:
+                                    - this is a warning
+                                    - another warning
+                                  messages:
+                                    - this is a message
                                   configFiles:
                                     - cfg.yaml
                                   outputDir: fetch1/files
@@ -178,7 +210,7 @@ chapters:
                                   id: fetch2
                                   depends: []
                                   logs:
-                                    - log1
+                                    - '{"source":"stdout","text":"log1"}'
                                   configFiles: []
                                   outputDir: fetch2/files
                                   resultFile: fetch2/data.json
@@ -190,7 +222,7 @@ chapters:
                                     - fetch1
                                     - fetch2
                                   logs:
-                                    - log1
+                                    - '{"source":"stdout","text":"log1"}'
                                   configFiles: []
                                   outputDir: transform/files
                                   resultFile: transform/data.json
@@ -208,5 +240,14 @@ chapters:
                             configFiles:
                                 - cfg.yaml
                             logs:
-                                - log1`
+                                - '{"source":"stdout","text":"log1"}'
+                                - '{"source":"stdout","json":{"warning":"this is a warning"}}'
+                                - '{"source":"stdout","json":{"warning":"another warning"}}'
+                                - '{"source":"stdout","json":{"message":"this is a message"}}'
+                                - '{"source":"stderr","text":"some error"}'
+                            warnings:
+                                - this is a warning
+                                - another warning
+                            messages:
+                                - this is a message`
 }

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/B-S-F/onyx/pkg/logger"
+	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,7 +32,7 @@ func TestRunnerIntegration(t *testing.T) {
 				WorkDir: tmpDir,
 			},
 			want: &Output{
-				Logs: []LogEntry{
+				Logs: []model.LogEntry{
 					{Source: "stdout", Text: "hello world"},
 					{Source: "stdout", Text: "env1"},
 					{Source: "stdout", Text: "***SECRET1***"},
@@ -54,7 +55,7 @@ func TestRunnerIntegration(t *testing.T) {
 				WorkDir: tmpDir,
 			},
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stderr", Text: "Command timed out after 10ms"}},
+				Logs:     []model.LogEntry{{Source: "stderr", Text: "Command timed out after 10ms"}},
 				ExitCode: 124,
 				WorkDir:  tmpDir,
 			},

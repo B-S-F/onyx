@@ -6,7 +6,6 @@ import (
 
 	"github.com/B-S-F/onyx/pkg/configuration"
 	"github.com/B-S-F/onyx/pkg/logger"
-	"github.com/B-S-F/onyx/pkg/v2/executor"
 	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -431,21 +430,27 @@ func simpleAutopilotRun() model.AutopilotRun {
 					ID:         "fetch1",
 					OutputDir:  "fetch1/files",
 					ResultFile: "fetch1/data.json",
-					Logs:       []string{"log1"},
-					ExitCode:   0,
+					Logs: []model.LogEntry{
+						{Source: "stdout", Text: "log1"},
+						{Source: "stdout", Json: map[string]interface{}{"warning": "this is a warning"}},
+						{Source: "stdout", Json: map[string]interface{}{"warning": "another warning"}},
+						{Source: "stdout", Json: map[string]interface{}{"message": "this is a message"}},
+						{Source: "stderr", Text: "some error"},
+					},
+					ExitCode: 0,
 				},
 				{
 					ID:         "fetch2",
 					OutputDir:  "fetch2/files",
 					ResultFile: "fetch2/data.json",
-					Logs:       []string{"log1"},
+					Logs:       []model.LogEntry{{Source: "stdout", Text: "log1"}},
 					ExitCode:   0,
 				},
 				{
 					ID:         "transform",
 					OutputDir:  "transform/files",
 					ResultFile: "transform/data.json",
-					Logs:       []string{"log1"},
+					Logs:       []model.LogEntry{{Source: "stdout", Text: "log1"}},
 					ExitCode:   0,
 					InputDirs:  []string{"fetch1", "fetch2"},
 				},
@@ -453,7 +458,7 @@ func simpleAutopilotRun() model.AutopilotRun {
 			EvaluateResult: model.EvaluateResult{
 				Reason: "should be GREEN",
 				Status: "GREEN",
-				Results: []executor.Result{
+				Results: []model.Result{
 					{
 						Criterion:     "criterion",
 						Fulfilled:     true,
@@ -462,7 +467,13 @@ func simpleAutopilotRun() model.AutopilotRun {
 					},
 				},
 				ExitCode: 0,
-				Logs:     []string{"log1"},
+				Logs: []model.LogEntry{
+					{Source: "stdout", Text: "log1"},
+					{Source: "stdout", Json: map[string]interface{}{"warning": "this is a warning"}},
+					{Source: "stdout", Json: map[string]interface{}{"warning": "another warning"}},
+					{Source: "stdout", Json: map[string]interface{}{"message": "this is a message"}},
+					{Source: "stderr", Text: "some error"},
+				},
 			},
 		},
 	}
@@ -652,9 +663,20 @@ func simpleAutomationChapter() *Chapter {
 								Name: "pdf-checker",
 								Steps: []Step{
 									{
-										Title:       "fetch1",
-										Id:          "fetch1",
-										Logs:        []string{"log1"},
+										Title: "fetch1",
+										Id:    "fetch1",
+										Logs: []string{
+											"{\"source\":\"stdout\",\"text\":\"log1\"}",
+											"{\"source\":\"stdout\",\"json\":{\"warning\":\"this is a warning\"}}",
+											"{\"source\":\"stdout\",\"json\":{\"warning\":\"another warning\"}}",
+											"{\"source\":\"stdout\",\"json\":{\"message\":\"this is a message\"}}",
+											"{\"source\":\"stderr\",\"text\":\"some error\"}",
+										},
+										Warnings: []string{
+											"this is a warning",
+											"another warning",
+										},
+										Messages:    []string{"this is a message"},
 										ConfigFiles: []string{"cfg.yaml"},
 										OutputDir:   "fetch1/files",
 										ResultFile:  "fetch1/data.json",
@@ -663,7 +685,7 @@ func simpleAutomationChapter() *Chapter {
 									{
 										Title:      "fetch2",
 										Id:         "fetch2",
-										Logs:       []string{"log1"},
+										Logs:       []string{"{\"source\":\"stdout\",\"text\":\"log1\"}"},
 										OutputDir:  "fetch2/files",
 										ResultFile: "fetch2/data.json",
 										ExitCode:   0,
@@ -671,7 +693,7 @@ func simpleAutomationChapter() *Chapter {
 									{
 										Title:      "transform",
 										Id:         "transform",
-										Logs:       []string{"log1"},
+										Logs:       []string{"{\"source\":\"stdout\",\"text\":\"log1\"}"},
 										Depends:    []string{"fetch1", "fetch2"},
 										InputDirs:  []string{"fetch1", "fetch2"},
 										OutputDir:  "transform/files",
@@ -693,7 +715,18 @@ func simpleAutomationChapter() *Chapter {
 									Metadata:      nil,
 								},
 							},
-							Logs:     []string{"log1"},
+							Logs: []string{
+								"{\"source\":\"stdout\",\"text\":\"log1\"}",
+								"{\"source\":\"stdout\",\"json\":{\"warning\":\"this is a warning\"}}",
+								"{\"source\":\"stdout\",\"json\":{\"warning\":\"another warning\"}}",
+								"{\"source\":\"stdout\",\"json\":{\"message\":\"this is a message\"}}",
+								"{\"source\":\"stderr\",\"text\":\"some error\"}",
+							},
+							Warnings: []string{
+								"this is a warning",
+								"another warning",
+							},
+							Messages: []string{"this is a message"},
 							ExitCode: 0,
 						},
 					},

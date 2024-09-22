@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +21,7 @@ func TestParseLogStrings(t *testing.T) {
 			outStr: "{\"key1\": \"value1\"}\n{\"key2\": \"value2\"}",
 			errStr: "error message",
 			want: &Output{
-				Logs: []LogEntry{
+				Logs: []model.LogEntry{
 					{Source: "stdout", Json: map[string]interface{}{"key1": "value1"}},
 					{Source: "stdout", Json: map[string]interface{}{"key2": "value2"}},
 					{Source: "stderr", Text: "error message"},
@@ -35,7 +36,7 @@ func TestParseLogStrings(t *testing.T) {
 			outStr: "{\"key1\": \"value1\"}\n{\"key2\": \"value2\"}",
 			errStr: "",
 			want: &Output{
-				Logs: []LogEntry{
+				Logs: []model.LogEntry{
 					{Source: "stdout", Json: map[string]interface{}{"key1": "value1"}},
 					{Source: "stdout", Json: map[string]interface{}{"key2": "value2"}},
 				},
@@ -49,7 +50,7 @@ func TestParseLogStrings(t *testing.T) {
 			outStr: "{\"key1\": 1}\n{\"key2\": 2.0}\n{\"key3\": 201872326}\n{\"key4\": 201872326.0}\n{\"key5\": -201872326}\n{\"key6\": -201872326.1}\n{\"key7\": 0}",
 			errStr: "",
 			want: &Output{
-				Logs: []LogEntry{
+				Logs: []model.LogEntry{
 					{Source: "stdout", Json: map[string]interface{}{"key1": json.Number("1")}},
 					{Source: "stdout", Json: map[string]interface{}{"key2": json.Number("2.0")}},
 					{Source: "stdout", Json: map[string]interface{}{"key3": json.Number("201872326")}},
@@ -73,7 +74,7 @@ func TestParseLogStrings(t *testing.T) {
 			outStr: "{\"key1\": \"2021-01-01T00:00:00Z\"}",
 			errStr: "",
 			want: &Output{
-				Logs: []LogEntry{{Source: "stdout", Json: map[string]interface{}{"key1": "2021-01-01T00:00:00Z"}}},
+				Logs: []model.LogEntry{{Source: "stdout", Json: map[string]interface{}{"key1": "2021-01-01T00:00:00Z"}}},
 				JsonData: []map[string]interface{}{
 					{"key1": "2021-01-01T00:00:00Z"},
 				},
@@ -83,7 +84,7 @@ func TestParseLogStrings(t *testing.T) {
 			outStr: "normal log",
 			errStr: "",
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stdout", Text: "normal log"}},
+				Logs:     []model.LogEntry{{Source: "stdout", Text: "normal log"}},
 				JsonData: nil,
 			},
 		},
@@ -91,7 +92,7 @@ func TestParseLogStrings(t *testing.T) {
 			outStr: "",
 			errStr: "error log",
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stderr", Text: "error log"}},
+				Logs:     []model.LogEntry{{Source: "stderr", Text: "error log"}},
 				JsonData: nil,
 			},
 		},
@@ -99,7 +100,7 @@ func TestParseLogStrings(t *testing.T) {
 			outStr: "",
 			errStr: "{\"context\":\"some-context\", \"errMsg\":\"err-msg\"}",
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stderr", Json: map[string]interface{}{"context": "some-context", "errMsg": "err-msg"}}},
+				Logs:     []model.LogEntry{{Source: "stderr", Json: map[string]interface{}{"context": "some-context", "errMsg": "err-msg"}}},
 				JsonData: nil,
 			},
 		},
@@ -107,7 +108,7 @@ func TestParseLogStrings(t *testing.T) {
 			outStr: "hello world\n",
 			errStr: "hello error world\n",
 			want: &Output{
-				Logs: []LogEntry{
+				Logs: []model.LogEntry{
 					{Source: "stdout", Text: "hello world"},
 					{Source: "stderr", Text: "hello error world"},
 				},

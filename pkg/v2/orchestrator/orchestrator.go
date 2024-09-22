@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/B-S-F/onyx/pkg/logger"
-	"github.com/B-S-F/onyx/pkg/runner"
+	"github.com/B-S-F/onyx/pkg/v2/executor"
 	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/B-S-F/onyx/pkg/workdir"
 	errs "github.com/pkg/errors"
@@ -112,14 +112,16 @@ func (o *Orchestrator) runManuals(manuals []model.ManualCheck, secrets map[strin
 		wg.Add(1)
 		go func(manual model.ManualCheck, secrets map[string]string, wg *sync.WaitGroup, execs chan<- manualExec) {
 			defer wg.Done()
+
 			logger := logger.NewAutopilot(logger.Settings{
 				Secrets: secrets,
 			})
+			manualExecutor := executor.NewManualExecutor(logger)
 
 			logger.Info(fmt.Sprintf("[[ CHAPTER: %s REQUIREMENT: %s CHECK: %s ]]", strings.ToUpper(manual.Chapter.Id), strings.ToUpper(manual.Requirement.Id), strings.ToUpper(manual.Check.Id)))
 
 			exec := manualExec{ManualCheck: manual, Logs: logger}
-			exec.Result, exec.Err = manual.Execute(logger)
+			exec.Result, exec.Err = manualExecutor.Execute(&manual)
 
 			execs <- exec
 		}(m, secrets, &wg, executions)
@@ -159,21 +161,26 @@ func (o *Orchestrator) runAutopilots(autopilots []model.AutopilotCheck, env, sec
 
 	for _, a := range autopilots {
 		wg.Add(1)
-		go func(autopilot model.AutopilotCheck, secrets map[string]string, wg *sync.WaitGroup, execs chan<- autopilotExec) {
+		go func(autopilot model.AutopilotCheck, secrets map[string]string, wg *sync.WaitGroup, execs chan<- autopilotExec, rootWorkDir string, strict bool, timeout time.Duration) {
 			defer wg.Done()
+
 			logger := logger.NewAutopilot(logger.Settings{
 				Secrets: secrets,
 			})
 
+			autopilotExecutor := executor.NewAutopilotExecutor(
+				workdir.NewUtils(afero.NewOsFs()),
+				o.rootWorkDir,
+				o.strict,
+				logger,
+				o.timeout)
+
 			logger.Info(fmt.Sprintf("[[ CHAPTER: %s REQUIREMENT: %s CHECK: %s ]]", strings.ToUpper(autopilot.Chapter.Id), strings.ToUpper(autopilot.Requirement.Id), strings.ToUpper(autopilot.Check.Id)))
 
 			exec := autopilotExec{AutopilotCheck: autopilot, Logs: logger}
-			wdUtils := workdir.NewUtils(afero.NewOsFs())
-			runner := runner.NewSubprocess(logger)
-			exec.Result, exec.Err = autopilot.Execute(wdUtils, o.rootWorkDir, env, secrets, o.strict, *logger, o.timeout, runner)
-
+			exec.Result, exec.Err = autopilotExecutor.ExecuteAutopilotCheck(&autopilot, env, secrets)
 			execs <- exec
-		}(a, secrets, &wg, executions)
+		}(a, secrets, &wg, executions, o.rootWorkDir, o.strict, o.timeout)
 	}
 
 	go func(wg *sync.WaitGroup, executions chan autopilotExec) {
@@ -213,9 +220,10 @@ func (o *Orchestrator) RunFinalizer(finalize model.Finalize, env, secrets map[st
 	})
 	defer logger.Flush()
 	defer logger.ToFile()
-	wdUtils := workdir.NewUtils(afero.NewOsFs())
-	runner := runner.NewSubprocess(logger)
-	result, err := finalize.Execute(wdUtils, o.rootWorkDir, env, secrets, *logger, o.timeout, runner)
+
+	finalizeExecutor := executor.NewFinalizeExecutor(workdir.NewUtils(afero.NewOsFs()), o.rootWorkDir, logger, o.timeout)
+
+	result, err := finalizeExecutor.Execute(&finalize, env, secrets)
 	if err != nil {
 		return nil, errs.Wrap(err, "failed to run finalize execute")
 	}
