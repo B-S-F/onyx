@@ -10,6 +10,7 @@ import (
 
 	"github.com/B-S-F/onyx/pkg/helper"
 	"github.com/B-S-F/onyx/pkg/logger"
+	"github.com/B-S-F/onyx/pkg/v2/model"
 	"go.uber.org/zap"
 )
 
@@ -39,7 +40,7 @@ func (s *Subprocess) Execute(input *Input, timeout time.Duration) (*Output, erro
 	}
 
 	if exitCode == 124 {
-		out.Logs = append(out.Logs, LogEntry{Source: stdErrSourceType, Text: fmt.Sprintf("Command timed out after %s", timeout)})
+		out.Logs = append(out.Logs, model.LogEntry{Source: stdErrSourceType, Text: fmt.Sprintf("Command timed out after %s", timeout)})
 	}
 
 	return out, nil

@@ -119,7 +119,6 @@ type Step struct {
 	Id string `yaml:"id" json:"id" jsonschema:"required"`
 	// Dependencies of the step
 	Depends []string `yaml:"depends" json:"depends" jsonschema:"optional"`
-	// TODO: logs are not yet implemented in a structured format
 	// Structured logs of the step, example:
 	// - '{"source": "stdout", "json": {"result":{"criterion":"Fixed RTC ticket with ID 1588653 must be risk assessed","fulfilled":false,"justification":"Please type the appropriate risk assessment for RTC Ticket with ID 1588653.","metadata":{"Id":1588653,"test-json":{"key":"value"}}}}}'
 	// - '{"source": "stdout", "text": "log message"}'
@@ -127,9 +126,6 @@ type Step struct {
 	// - '{"source": "stdout", "json": {"message": "I am a message"}}'
 	// - '{"source": "stderr", "text": "some error log"}'
 	Logs []string `yaml:"logs" json:"logs" jsonschema:"required"`
-	// TODO: will be removed after implementing structured logs
-	// Error logs from the execution of the Step
-	ErrorLogs []string `yaml:"errorLogs,omitempty" json:"errorLogs" jsonschema:"optional"`
 	// Warning messages of the Step execution, derived from the generated structured logs
 	Warnings []string `yaml:"warnings,omitempty" json:"warnings" jsonschema:"optional"`
 	// General info messages of the Step execution, derived from the generated structured logs
@@ -156,7 +152,6 @@ type Evaluation struct {
 	Reason string `yaml:"reason" json:"reason" jsonschema:"required"`
 	// Results of the autopilot
 	Results []EvaluationResult `yaml:"results,omitempty" json:"results" jsonschema:"optional"`
-	// TODO: logs are not yet implemented in a structured format
 	// Structured logs of the evaluation, example:
 	// - '{"source": "stdout", "json": {"result":{"criterion":"Fixed RTC ticket with ID 1588653 must be risk assessed","fulfilled":false,"justification":"Please type the appropriate risk assessment for RTC Ticket with ID 1588653.","metadata":{"Id":1588653,"test-json":{"key":"value"}}}}}'
 	// - '{"source": "stdout", "text": "log message"}'
@@ -164,9 +159,6 @@ type Evaluation struct {
 	// - '{"source": "stdout", "json": {"message": "I am a message"}}'
 	// - '{"source": "stderr", "text": "some error log"}'
 	Logs []string `yaml:"logs,omitempty" json:"logs" jsonschema:"required"`
-	// TODO: will be removed after implementing structured logs
-	// Error logs from the execution of the evaluation
-	ErrorLogs []string `yaml:"errorLogs,omitempty" json:"errorLogs" jsonschema:"optional"`
 	// Warning messages of the evaluation execution, derived from the generated structured logs
 	Warnings []string `yaml:"warnings,omitempty" json:"warnings" jsonschema:"optional"`
 	// General info messages of the evaluation execution, derived from the generated structured logs
@@ -197,7 +189,6 @@ type EvaluationResult struct {
 
 // Contains information about the finalization
 type Finalize struct {
-	// TODO: logs are not yet implemented in a structured format
 	// Structured logs from the execution of the finalizer
 	// Example:
 	// - '{"source": "stdout", "json": {"result":{"criterion":"Fixed RTC ticket with ID 1588653 must be risk assessed","fulfilled":false,"justification":"Please type the appropriate risk assessment for RTC Ticket with ID 1588653.","metadata":{"Id":1588653,"test-json":{"key":"value"}}}}}'
@@ -206,12 +197,6 @@ type Finalize struct {
 	// - '{"source": "stdout", "json": {"message": "I am a message"}}'
 	// - '{"source": "stderr", "text": "some error log"}'
 	Logs []string `yaml:"logs,omitempty" json:"logs" jsonschema:"optional"`
-	// TODO: will be removed after implementing structured logs
-	// Error logs from the execution of the finalizer
-	// Example
-	// 	- "Hello Error"
-	// 	- "This is my error log"
-	ErrorLogs []string `yaml:"errorLogs,omitempty" json:"errorLogs" jsonschema:"optional"`
 	// Warning messages of the Finalize execution, derived from the generated structured logs
 	Warnings []string `yaml:"warnings,omitempty" json:"warnings" jsonschema:"optional"`
 	// General info messages of the Finalize execution, derived from the generated structured logs

@@ -33,9 +33,9 @@ chapters:
                                   id: fetch1
                                   depends: []
                                   logs:
-                                    - 1_1_1
-                                    - evidences/1_1_1/steps/fetch1/files
-                                    - evidences/1_1_1/steps/fetch1/data.json
+                                    - '{"source":"stdout","text":"1_1_1"}'
+                                    - '{"source":"stdout","text":"evidences/1_1_1/steps/fetch1/files"}'
+                                    - '{"source":"stdout","text":"evidences/1_1_1/steps/fetch1/data.json"}'
                                   configFiles: []
                                   outputDir: evidences/1_1_1/steps/fetch1/files
                                   resultFile: ""
@@ -46,10 +46,10 @@ chapters:
                                   depends:
                                     - fetch1
                                   logs:
-                                    - 1_1_1
-                                    - evidences/1_1_1/steps/fetch2/files
-                                    - evidences/1_1_1/steps/fetch2/data.json
-                                    - evidences/1_1_1/steps/fetch1/files
+                                    - '{"source":"stdout","text":"1_1_1"}'
+                                    - '{"source":"stdout","text":"evidences/1_1_1/steps/fetch2/files"}'
+                                    - '{"source":"stdout","text":"evidences/1_1_1/steps/fetch2/data.json"}'
+                                    - '{"source":"stdout","text":"evidences/1_1_1/steps/fetch1/files"}'
                                   configFiles: []
                                   outputDir: evidences/1_1_1/steps/fetch2/files
                                   resultFile: ""
@@ -61,10 +61,10 @@ chapters:
                                   depends:
                                     - fetch2
                                   logs:
-                                    - 1_1_1
-                                    - evidences/1_1_1/steps/transform1/files
-                                    - evidences/1_1_1/steps/transform1/data.json
-                                    - fetch2.txt
+                                    - '{"source":"stdout","text":"1_1_1"}'
+                                    - '{"source":"stdout","text":"evidences/1_1_1/steps/transform1/files"}'
+                                    - '{"source":"stdout","text":"evidences/1_1_1/steps/transform1/data.json"}'
+                                    - '{"source":"stdout","text":"fetch2.txt"}'
                                   configFiles: []
                                   outputDir: evidences/1_1_1/steps/transform1/files
                                   resultFile: evidences/1_1_1/steps/transform1/data.json
@@ -77,15 +77,15 @@ chapters:
                                     - fetch1
                                     - fetch2
                                   logs:
-                                    - 1_1_1
-                                    - evidences/1_1_1/steps/transform2/files
-                                    - evidences/1_1_1/steps/transform2/data.json
-                                    - Removing ' from evidences/1_1_1/steps/fetch1/files' to sanitize for ls
-                                    - Reading from evidences/1_1_1/steps/fetch1/files
-                                    - fetch1.txt
-                                    - Removing ' from 'evidences/1_1_1/steps/fetch2/files to sanitize for ls
-                                    - Reading from evidences/1_1_1/steps/fetch2/files
-                                    - fetch2.txt
+                                    - "{\"source\":\"stdout\",\"text\":\"1_1_1\"}"
+                                    - "{\"source\":\"stdout\",\"text\":\"evidences/1_1_1/steps/transform2/files\"}"
+                                    - "{\"source\":\"stdout\",\"text\":\"evidences/1_1_1/steps/transform2/data.json\"}"
+                                    - "{\"source\":\"stdout\",\"text\":\"Removing ' from evidences/1_1_1/steps/fetch1/files' to sanitize for ls\"}"
+                                    - "{\"source\":\"stdout\",\"text\":\"Reading from evidences/1_1_1/steps/fetch1/files\"}"
+                                    - "{\"source\":\"stdout\",\"text\":\"fetch1.txt\"}"
+                                    - "{\"source\":\"stdout\",\"text\":\"Removing ' from 'evidences/1_1_1/steps/fetch2/files to sanitize for ls\"}"
+                                    - "{\"source\":\"stdout\",\"text\":\"Reading from evidences/1_1_1/steps/fetch2/files\"}"
+                                    - "{\"source\":\"stdout\",\"text\":\"fetch2.txt\"}"
                                   configFiles: []
                                   outputDir: evidences/1_1_1/steps/transform2/files
                                   resultFile: evidences/1_1_1/steps/transform2/data.json
@@ -101,17 +101,17 @@ chapters:
                                   fulfilled: false
                                   justification: I am the justification
                             logs:
-                                - evidences/1_1_1/steps/transform1/data.json':'evidences/1_1_1/steps/transform2/data.json
-                                - evidences/1_1_1/evaluation/result.json
-                                - Removing ' from evidences/1_1_1/steps/transform1/data.json' to sanitize for cat
-                                - Reading from evidences/1_1_1/steps/transform1/data.json
-                                - result2
-                                - Removing ' from 'evidences/1_1_1/steps/transform2/data.json to sanitize for cat
-                                - Reading from evidences/1_1_1/steps/transform2/data.json
-                                - result2
-                                - '{"status": "GREEN"}'
-                                - '{"reason": "This is a reason"}'
-                                - '{"result": {"criterion": "I am a criterion", "fulfilled": false, "justification": "I am the justification"}}'
+                                - "{\"source\":\"stdout\",\"text\":\"evidences/1_1_1/steps/transform1/data.json':'evidences/1_1_1/steps/transform2/data.json\"}"
+                                - "{\"source\":\"stdout\",\"text\":\"evidences/1_1_1/evaluation/result.json\"}"
+                                - "{\"source\":\"stdout\",\"text\":\"Removing ' from evidences/1_1_1/steps/transform1/data.json' to sanitize for cat\"}"
+                                - "{\"source\":\"stdout\",\"text\":\"Reading from evidences/1_1_1/steps/transform1/data.json\"}"
+                                - "{\"source\":\"stdout\",\"text\":\"result2\"}"
+                                - "{\"source\":\"stdout\",\"text\":\"Removing ' from 'evidences/1_1_1/steps/transform2/data.json to sanitize for cat\"}"
+                                - "{\"source\":\"stdout\",\"text\":\"Reading from evidences/1_1_1/steps/transform2/data.json\"}"
+                                - "{\"source\":\"stdout\",\"text\":\"result2\"}"
+                                - "{\"source\":\"stdout\",\"json\":{\"status\":\"GREEN\"}}"
+                                - "{\"source\":\"stdout\",\"json\":{\"reason\":\"This is a reason\"}}"
+                                - "{\"source\":\"stdout\",\"json\":{\"result\":{\"criterion\":\"I am a criterion\",\"fulfilled\":false,\"justification\":\"I am the justification\"}}}"
                             configFiles:
                                 - additional-config.yaml
     "2":
@@ -195,9 +195,9 @@ chapters:
                                   fulfilled: false
                                   justification: I am the justification
                             logs:
-                                - '{"status": "GREEN"}'
-                                - '{"reason": "Some reason"}'
-                                - '{"result": {"criterion": "I am a criterion", "fulfilled": false, "justification": "I am the justification"}}'
+                                - '{"source":"stdout","json":{"status":"GREEN"}}'
+                                - '{"source":"stdout","json":{"reason":"Some reason"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"I am a criterion","fulfilled":false,"justification":"I am the justification"}}}'
                     1b:
                         title: Status YELLOW should be supported
                         type: automation
@@ -212,9 +212,9 @@ chapters:
                                   fulfilled: false
                                   justification: I am the justification
                             logs:
-                                - '{"status": "YELLOW"}'
-                                - '{"reason": "Some reason"}'
-                                - '{"result": {"criterion": "I am a criterion", "fulfilled": false, "justification": "I am the justification"}}'
+                                - '{"source":"stdout","json":{"status":"YELLOW"}}'
+                                - '{"source":"stdout","json":{"reason":"Some reason"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"I am a criterion","fulfilled":false,"justification":"I am the justification"}}}'
                     1c:
                         title: Status RED should be supported
                         type: automation
@@ -229,9 +229,9 @@ chapters:
                                   fulfilled: false
                                   justification: I am the justification
                             logs:
-                                - '{"status": "RED"}'
-                                - '{"reason": "Some reason"}'
-                                - '{"result": {"criterion": "I am a criterion", "fulfilled": false, "justification": "I am the justification"}}'
+                                - '{"source":"stdout","json":{"status":"RED"}}'
+                                - '{"source":"stdout","json":{"reason":"Some reason"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"I am a criterion","fulfilled":false,"justification":"I am the justification"}}}'
                     1d:
                         title: If a status is not supported, it should be set to ERROR
                         type: automation
@@ -246,9 +246,9 @@ chapters:
                                   fulfilled: false
                                   justification: I am the justification
                             logs:
-                                - '{"status": "UNKNOWN"}'
-                                - '{"reason": "Some reason"}'
-                                - '{"result": {"criterion": "I am a criterion", "fulfilled": false, "justification": "I am the justification"}}'
+                                - '{"source":"stdout","json":{"status":"UNKNOWN"}}'
+                                - '{"source":"stdout","json":{"reason":"Some reason"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"I am a criterion","fulfilled":false,"justification":"I am the justification"}}}'
                     1e:
                         title: If a status is empty, it should be set to ERROR
                         type: automation
@@ -263,9 +263,9 @@ chapters:
                                   fulfilled: false
                                   justification: I am the justification
                             logs:
-                                - '{"status": ""}'
-                                - '{"reason": "Some reason"}'
-                                - '{"result": {"criterion": "I am a criterion", "fulfilled": false, "justification": "I am the justification"}}'
+                                - '{"source":"stdout","json":{"status":""}}'
+                                - '{"source":"stdout","json":{"reason":"Some reason"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"I am a criterion","fulfilled":false,"justification":"I am the justification"}}}'
                     "3":
                         title: Reason should be supported
                         type: automation
@@ -276,8 +276,8 @@ chapters:
                             status: RED
                             reason: This is a reason
                             logs:
-                                - '{"reason": "This is a reason"}'
-                                - '{"status": "RED"}'
+                                - '{"source":"stdout","json":{"reason":"This is a reason"}}'
+                                - '{"source":"stdout","json":{"status":"RED"}}'
                     "6":
                         title: Findings should be supported
                         type: automation
@@ -302,10 +302,10 @@ chapters:
                                     package: "I am a package"
                                     severity: "I am a severity"
                             logs:
-                                - '{"result": {"criterion": "I am a criterion", "fulfilled": false, "justification": "I am the reason"}}'
-                                - '{"result": {"criterion": "I am a criterion 2", "fulfilled": false, "justification": "I am another reason"}}'
-                                - '{"result": {"criterion": "I am a criterion 3", "fulfilled": false, "justification": "I am yet another reason", "metadata": {"customer": "I am customer in metadata", "package": "I am a package", "severity": "I am a severity"}}}'
-                                - '{"status": "GREEN", "reason": "This is a reason"}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"I am a criterion","fulfilled":false,"justification":"I am the reason"}}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"I am a criterion 2","fulfilled":false,"justification":"I am another reason"}}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"I am a criterion 3","fulfilled":false,"justification":"I am yet another reason","metadata":{"customer":"I am customer in metadata","package":"I am a package","severity":"I am a severity"}}}}'
+                                - '{"source":"stdout","json":{"reason":"This is a reason","status":"GREEN"}}'
                     "7":
                         title: Can provide handle escape characters in a string
                         type: automation
@@ -320,8 +320,8 @@ chapters:
                                   fulfilled: true
                                   justification: "reason is \b \f \n \r \t \n \\ \" \\n"
                             logs:
-                                - '{"result": {"criterion": "criterion is \b \f \n \r \t \u000A \\ \" \\n", "fulfilled": true, "justification": "reason is \b \f \n \r \t \u000A \\ \" \\n"}}'
-                                - '{"status": "RED"}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"criterion is \b \f \n \r \t \n \\ \" \\n","fulfilled":true,"justification":"reason is \b \f \n \r \t \n \\ \" \\n"}}}'
+                                - '{"source":"stdout","json":{"status":"RED"}}'
                     "8":
                         title: Can provide handle new line characters in a string
                         type: automation
@@ -344,9 +344,9 @@ chapters:
                                   metadata:
                                     "cust\tomer": "cust\nomer metadata"
                             logs:
-                                - '{"status": "GREEN"}'
-                                - '{"reason": "reas\non"}'
-                                - '{"result": {"criterion": "crit\nerion", "fulfilled": true, "justification": "reas\non", "metadata": {"cust\tomer": "cust\nomer metadata"}}}'
+                                - '{"source":"stdout","json":{"status":"GREEN"}}'
+                                - '{"source":"stdout","json":{"reason":"reas\non"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"crit\nerion","fulfilled":true,"justification":"reas\non","metadata":{"cust\tomer":"cust\nomer metadata"}}}}'
                     "9":
                         title: Can provide handle problematic yaml multilines
                         type: automation
@@ -364,9 +364,9 @@ chapters:
                                      line2
                                     line3
                             logs:
-                                - '{"status": "GREEN"}'
-                                - '{"reason": "reason"}'
-                                - '{"result": {"criterion": "criterion", "fulfilled": true, "justification": "  line1\n line2\nline3" }}'
+                                - '{"source":"stdout","json":{"status":"GREEN"}}'
+                                - '{"source":"stdout","json":{"reason":"reason"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"criterion","fulfilled":true,"justification":"  line1\n line2\nline3"}}}'
     "4":
         title: Parameter Replacement
         status: ERROR
@@ -385,13 +385,13 @@ chapters:
                             status: RED
                             reason: This is a reason
                             logs:
-                                - global-env-1
-                                - global-env-1
-                                - global-env-2
-                                - autopilot-ref-env-2
-                                - autopilot-env-3
-                                - autopilot-env-3
-                                - '{"status": "RED", "reason": "This is a reason"}'
+                                - '{"source":"stdout","text":"global-env-1"}'
+                                - '{"source":"stdout","text":"global-env-1"}'
+                                - '{"source":"stdout","text":"global-env-2"}'
+                                - '{"source":"stdout","text":"autopilot-ref-env-2"}'
+                                - '{"source":"stdout","text":"autopilot-env-3"}'
+                                - '{"source":"stdout","text":"autopilot-env-3"}'
+                                - '{"source":"stdout","json":{"reason":"This is a reason","status":"RED"}}'
                     "2":
                         title: Replace secrets
                         type: automation
@@ -402,9 +402,9 @@ chapters:
                             status: RED
                             reason: This is a reason
                             logs:
-                                - '***SECRET_2***'
-                                - '***SECRET_3***'
-                                - '{"status": "RED", "reason": "This is a reason"}'
+                                - '{"source":"stdout","text":"***SECRET_2***"}'
+                                - '{"source":"stdout","text":"***SECRET_3***"}'
+                                - '{"source":"stdout","json":{"reason":"This is a reason","status":"RED"}}'
                     "3":
                         title: Replace variables
                         type: automation
@@ -415,11 +415,11 @@ chapters:
                             status: RED
                             reason: This is a reason
                             logs:
-                                - var 2
-                                - var 3
-                                - new line
-                                - some value
-                                - '{"status": "RED", "reason": "This is a reason"}'
+                                - '{"source":"stdout","text":"var 2"}'
+                                - '{"source":"stdout","text":"var 3"}'
+                                - '{"source":"stdout","text":"new line"}'
+                                - '{"source":"stdout","text":"some value"}'
+                                - '{"source":"stdout","json":{"reason":"This is a reason","status":"RED"}}'
                             configFiles:
                                 - ${{ env.MY_CONFIG }}
             "2":
@@ -449,10 +449,9 @@ chapters:
                             status: ERROR
                             reason: autopilot 'additional-config-provider' exited with exit code 1
                             logs:
-                                - '{"status": "RED", "reason": "This is a reason"}'
-                                - This autopilot has an additional config
-                            errorLogs:
-                                - 'cat: /additional-config.yaml: No such file or directory'
+                                - '{"source":"stdout","json":{"reason":"This is a reason","status":"RED"}}'
+                                - '{"source":"stdout","text":"This autopilot has an additional config"}'
+                                - '{"source":"stderr","text":"cat: /additional-config.yaml: No such file or directory"}'
                             configFiles:
                                 - additional-config.yaml
                             exitCode: 1
@@ -470,11 +469,11 @@ chapters:
                             status: RED
                             reason: This is a reason
                             logs:
-                                - var 2
-                                - var 3
-                                - new line
-                                - some value
-                                - '{"status": "RED", "reason": "This is a reason"}'
+                                - '{"source":"stdout","text":"var 2"}'
+                                - '{"source":"stdout","text":"var 3"}'
+                                - '{"source":"stdout","text":"new line"}'
+                                - '{"source":"stdout","text":"some value"}'
+                                - '{"source":"stdout","json":{"reason":"This is a reason","status":"RED"}}'
                             configFiles:
                                 - config1.yaml
     "5":
@@ -595,9 +594,9 @@ chapters:
                             status: RED
                             reason: This is a reason
                             logs:
-                                - '***SECRET_2***'
-                                - '***SECRET_3***'
-                                - '{"status": "RED", "reason": "This is a reason"}'
+                                - '{"source":"stdout","text":"***SECRET_2***"}'
+                                - '{"source":"stdout","text":"***SECRET_3***"}'
+                                - '{"source":"stdout","json":{"reason":"This is a reason","status":"RED"}}'
     "7":
         title: Should use timeout
         status: ERROR
@@ -616,11 +615,10 @@ chapters:
                             status: ERROR
                             reason: autopilot 'timeout-autopilot' timed out after 3s
                             logs:
-                                - Hello 1!
-                                - Hello 2!
-                                - Hello 3!
-                            errorLogs:
-                                - Command timed out after 3s
+                                - '{"source":"stdout","text":"Hello 1!"}'
+                                - '{"source":"stdout","text":"Hello 2!"}'
+                                - '{"source":"stdout","text":"Hello 3!"}'
+                                - '{"source":"stderr","text":"Command timed out after 3s"}'
                             exitCode: 124
     "8":
         title: File consistency
@@ -640,7 +638,7 @@ chapters:
                             status: ERROR
                             reason: 'autopilot ''write-data-to-file'' provided an invalid ''status'': '''''
                             logs:
-                                - symlink.txt
+                                - '{"source":"stdout","text":"symlink.txt"}'
     "9":
         title: Repositories and Apps
         status: GREEN
@@ -663,9 +661,9 @@ chapters:
                                   fulfilled: true
                                   justification: This app is a repository app
                             logs:
-                                - '{"status": "GREEN"}'
-                                - '{"reason": "Repository apps was fetched"}'
-                                - '{"result": {"criterion": "Repository apps can be fetched", "fulfilled": true, "justification": "This app is a repository app"}}'
+                                - '{"source":"stdout","json":{"status":"GREEN"}}'
+                                - '{"source":"stdout","json":{"reason":"Repository apps was fetched"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"Repository apps can be fetched","fulfilled":true,"justification":"This app is a repository app"}}}'
                     "2":
                         title: App can be specified without repository
                         type: automation
@@ -680,9 +678,9 @@ chapters:
                                   fulfilled: true
                                   justification: This app is a repository app
                             logs:
-                                - '{"status": "GREEN"}'
-                                - '{"reason": "Repository apps was fetched"}'
-                                - '{"result": {"criterion": "Repository apps can be fetched", "fulfilled": true, "justification": "This app is a repository app"}}'
+                                - '{"source":"stdout","json":{"status":"GREEN"}}'
+                                - '{"source":"stdout","json":{"reason":"Repository apps was fetched"}}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"Repository apps can be fetched","fulfilled":true,"justification":"This app is a repository app"}}}'
     "10":
         title: Special Outputs
         status: RED
@@ -705,30 +703,23 @@ chapters:
                                   fulfilled: false
                                   justification: Please type the appropriate risk assessment for RTC Ticket with ID 1588653.
                                   metadata:
-                                    Creation Date: "2022-11-08T09:51:00"
-                                    Modified Date: "2023-06-09T14:05:00"
-                                    Defect Occurrence: "Always"
-                                    boolean: "true"
-                                    test-json: "{\"key\":\"value\"}"
-                                    Id: "1588653"
-                                    Filed Against: "Platform_General"
                                     Summary: "[main] after EDLminidump SoC bootup stuck"
                             logs:
-                                - '{"result": {"criterion": "FFixed RTC ticket with ID 1588653 must be risk assessed", "fulfilled": false, "justification": "Please type the appropriate risk assessment for RTC Ticket with ID 1588653.", "metadata": {"Id": 1588653, "Filed Against": "Platform_General", "Summary": "[main] after EDLminidump SoC bootup stuck", "Creation Date": "2022-11-08T09:51:00", "Modified Date": "2023-06-09T14:05:00", "Defect Occurrence": "Always", "boolean": true, "test-json": {"key": "value"}}}}'
-                                - '{"status": "RED", "reason": "test"}'
+                                - '{"source":"stdout","json":{"result":{"criterion":"FFixed RTC ticket with ID 1588653 must be risk assessed","fulfilled":false,"justification":"Please type the appropriate risk assessment for RTC Ticket with ID 1588653.","metadata":{"Summary":"[main] after EDLminidump SoC bootup stuck"}}}}'
+                                - '{"source":"stdout","json":{"reason":"test","status":"RED"}}'
 finalize:
     logs:
-        - global-env-1
-        - global-env-1
-        - '***SECRET_1***'
-        - '***SECRET_1***'
-        - var 1
-        - var 1
-        - qg-result.yaml exists
-        - This finalizer has an additional config
-        - 'env: finalizer-ref-additional-config-env'
-        - 'var: additional config var'
-        - 'secret: ${{ secrets.ADDITIONAL_CONFIG_SECRET }}'
+        - '{"source":"stdout","text":"global-env-1"}'
+        - '{"source":"stdout","text":"global-env-1"}'
+        - '{"source":"stdout","text":"***SECRET_1***"}'
+        - '{"source":"stdout","text":"***SECRET_1***"}'
+        - '{"source":"stdout","text":"var 1"}'
+        - '{"source":"stdout","text":"var 1"}'
+        - '{"source":"stdout","text":"qg-result.yaml exists"}'
+        - '{"source":"stdout","text":"This finalizer has an additional config"}'
+        - '{"source":"stdout","text":"env: finalizer-ref-additional-config-env"}'
+        - '{"source":"stdout","text":"var: additional config var"}'
+        - '{"source":"stdout","text":"secret: ${{ secrets.ADDITIONAL_CONFIG_SECRET }}"}'
     configFiles:
         - additional-config.yaml
     exitCode: 0

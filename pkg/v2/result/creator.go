@@ -1,6 +1,7 @@
 package result
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"os"
@@ -18,13 +19,15 @@ import (
 )
 
 const (
-	errorStatus      = "ERROR"
-	redStatus        = "RED"
-	yellowStatus     = "YELLOW"
-	greenStatus      = "GREEN"
-	skippedStatus    = "SKIPPED"
-	unansweredStatus = "UNANSWERED"
-	naStatus         = "NA"
+	errorStatus       = "ERROR"
+	redStatus         = "RED"
+	yellowStatus      = "YELLOW"
+	greenStatus       = "GREEN"
+	skippedStatus     = "SKIPPED"
+	unansweredStatus  = "UNANSWERED"
+	naStatus          = "NA"
+	jsonLogWarningKey = "warning"
+	jsonLogMessageKey = "message"
 )
 
 type Creator struct {
@@ -89,18 +92,53 @@ func (c *Creator) Create(ep model.ExecutionPlan, runResult model.RunResult) (*Re
 	return &res, nil
 }
 
-func (c *Creator) AppendFinalizeResult(res *Result, finalizeResult model.FinalizeResult, finalize model.Finalize) {
+func (c *Creator) AppendFinalizeResult(res *Result, finalizeResult model.FinalizeResult, finalize model.Finalize) error {
 	configs := make([]string, 0, len(finalize.Configs))
 	for cfg := range finalize.Configs {
 		configs = append(configs, cfg)
 	}
 
+	logs, err := c.marshalLogs(finalizeResult.Logs)
+	if err != nil {
+		return errors.Wrap(err, "failed to json marshal log entries")
+	}
+
 	res.Finalize = &Finalize{
-		Logs:        finalizeResult.Logs,
-		ErrorLogs:   finalizeResult.ErrLogs,
+		Logs:        logs,
+		Warnings:    c.extractLogs(finalizeResult.Logs, jsonLogWarningKey),
+		Messages:    c.extractLogs(finalizeResult.Logs, jsonLogMessageKey),
 		ConfigFiles: configs,
 		ExitCode:    finalizeResult.ExitCode,
 	}
+
+	return nil
+}
+
+func (c *Creator) marshalLogs(logs []model.LogEntry) ([]string, error) {
+	var result []string
+	for _, log := range logs {
+		logLine, err := json.Marshal(log)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, string(logLine))
+	}
+
+	return result, nil
+}
+
+func (c *Creator) extractLogs(logs []model.LogEntry, jsonLogKey string) []string {
+	var results []string
+	for _, log := range logs {
+		if v, exists := log.Json[jsonLogKey]; exists {
+			if value, ok := v.(string); ok {
+				results = append(results, value)
+			}
+		}
+	}
+
+	return results
 }
 
 func (c *Creator) WriteResultFile(res Result, path string) error {
@@ -174,6 +212,11 @@ func (c *Creator) addAutopilotResult(chapters map[string]*Chapter, a model.Autop
 			})
 		}
 
+		evaluateLogs, err := c.marshalLogs(a.Result.EvaluateResult.Logs)
+		if err != nil {
+			return errors.Wrap(err, "failed to json marshal log entries")
+		}
+
 		requirement.Checks[a.AutopilotCheck.Check.Id] = &Check{
 			Title: a.AutopilotCheck.Check.Title,
 			Type:  "automation",
@@ -188,8 +231,9 @@ func (c *Creator) addAutopilotResult(chapters map[string]*Chapter, a model.Autop
 				Reason:      a.Result.EvaluateResult.Reason,
 				ConfigFiles: evaluationCfgs,
 				Results:     evaluationResults,
-				Logs:        a.Result.EvaluateResult.Logs,
-				ErrorLogs:   a.Result.EvaluateResult.ErrLogs,
+				Logs:        evaluateLogs,
+				Warnings:    c.extractLogs(a.Result.EvaluateResult.Logs, jsonLogWarningKey),
+				Messages:    c.extractLogs(a.Result.EvaluateResult.Logs, jsonLogMessageKey),
 				ExitCode:    a.Result.EvaluateResult.ExitCode,
 			},
 		}
@@ -210,6 +254,12 @@ func (c *Creator) createSteps(stepResults []model.StepResult, stepsByID map[stri
 		for cfgFilename := range stepModel.Configs {
 			cfgs = append(cfgs, cfgFilename)
 		}
+
+		logs, err := c.marshalLogs(s.Logs)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to json marshal log entries")
+		}
+
 		steps = append(steps, Step{
 			Title:       stepModel.Title,
 			Id:          s.ID,
@@ -218,8 +268,9 @@ func (c *Creator) createSteps(stepResults []model.StepResult, stepsByID map[stri
 			InputDirs:   s.InputDirs,
 			OutputDir:   s.OutputDir,
 			ResultFile:  s.ResultFile,
-			Logs:        s.Logs,
-			ErrorLogs:   s.ErrLogs,
+			Logs:        logs,
+			Warnings:    c.extractLogs(s.Logs, jsonLogWarningKey),
+			Messages:    c.extractLogs(s.Logs, jsonLogMessageKey),
 			ExitCode:    s.ExitCode,
 		})
 	}

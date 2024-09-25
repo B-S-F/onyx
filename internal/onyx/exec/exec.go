@@ -202,7 +202,12 @@ func (e *exec) execPlanV2(ep *model.ExecutionPlan, secrets map[string]string) er
 		if err != nil {
 			return errors.Wrap(err, "error running finalizer")
 		}
-		resCreator.AppendFinalizeResult(createdResult, *finalizeRes, *ep.Finalize)
+
+		err = resCreator.AppendFinalizeResult(createdResult, *finalizeRes, *ep.Finalize)
+		if err != nil {
+			return err
+		}
+
 		err = resCreator.WriteResultFile(*createdResult, resFilePath)
 		if err != nil {
 			return errors.Wrap(err, "error writing result file")
