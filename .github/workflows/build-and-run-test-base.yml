@@ -35,7 +35,7 @@ jobs:
 #        run: make test-coverage
 
       - name: Private actions checkout
-        uses: daspn/private-actions-checkout@v2
+        uses: daspn/private-actions-checkout@v2.4
         with:
           actions_list: '["B-S-F/github-actions@main"]'
           checkout_base_path: ./.github/actions
