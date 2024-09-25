@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/B-S-F/onyx/pkg/logger"
+	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
@@ -33,7 +34,7 @@ func TestExecute(t *testing.T) {
 			},
 			timeout: 10 * time.Minute,
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stdout", Text: "hello world"}},
+				Logs:     []model.LogEntry{{Source: "stdout", Text: "hello world"}},
 				ExitCode: 0,
 				WorkDir:  tmpDir,
 			},
@@ -46,7 +47,7 @@ func TestExecute(t *testing.T) {
 			},
 			timeout: 10 * time.Minute,
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stderr", Text: "hello world"}},
+				Logs:     []model.LogEntry{{Source: "stderr", Text: "hello world"}},
 				ExitCode: 0,
 				WorkDir:  tmpDir,
 			},
@@ -76,7 +77,7 @@ func TestExecute(t *testing.T) {
 			},
 			timeout: 10 * time.Minute,
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stdout", Text: "***SECRET1***"}},
+				Logs:     []model.LogEntry{{Source: "stdout", Text: "***SECRET1***"}},
 				JsonData: nil,
 				WorkDir:  tmpDir,
 			},
@@ -93,7 +94,7 @@ func TestExecute(t *testing.T) {
 			},
 			timeout: 10 * time.Minute,
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stderr", Text: "***SECRET1***"}},
+				Logs:     []model.LogEntry{{Source: "stderr", Text: "***SECRET1***"}},
 				JsonData: nil,
 				WorkDir:  tmpDir,
 			},
@@ -110,7 +111,7 @@ func TestExecute(t *testing.T) {
 			},
 			timeout: 10 * time.Minute,
 			want: &Output{
-				Logs:     []LogEntry{{Source: "stdout", Json: map[string]interface{}{"key1": "***SECRET1***"}}},
+				Logs:     []model.LogEntry{{Source: "stdout", Json: map[string]interface{}{"key1": "***SECRET1***"}}},
 				JsonData: []map[string]interface{}{{"key1": "***SECRET1***"}},
 				WorkDir:  tmpDir,
 			},
@@ -292,7 +293,7 @@ func TestParseOutput(t *testing.T) {
 			want: &Output{
 				WorkDir:  workDir,
 				ExitCode: 2,
-				Logs:     []LogEntry{{Source: "stdout", Text: "output"}, {Source: "stderr", Text: "error"}},
+				Logs:     []model.LogEntry{{Source: "stdout", Text: "output"}, {Source: "stderr", Text: "error"}},
 			},
 		},
 	}

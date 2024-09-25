@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"strings"
 	"time"
+
+	"github.com/B-S-F/onyx/pkg/v2/model"
 )
 
 const (
@@ -22,14 +24,8 @@ type Input struct {
 type Output struct {
 	JsonData []map[string]interface{}
 	WorkDir  string
-	Logs     []LogEntry
+	Logs     []model.LogEntry
 	ExitCode int
-}
-
-type LogEntry struct {
-	Source string
-	Json   map[string]interface{}
-	Text   string
 }
 
 func (o *Output) parseLogStrings(outStr, errStr string) error {
@@ -44,12 +40,12 @@ func (o *Output) parseLogStrings(outStr, errStr string) error {
 			decoder := json.NewDecoder(strings.NewReader(outLine))
 			decoder.UseNumber()
 			_ = decoder.Decode(&jsonLine)
-			o.Logs = append(o.Logs, LogEntry{Source: stdOutSourceType, Json: jsonLine})
+			o.Logs = append(o.Logs, model.LogEntry{Source: stdOutSourceType, Json: jsonLine})
 			o.JsonData = append(o.JsonData, jsonLine)
 			continue
 		}
 
-		o.Logs = append(o.Logs, LogEntry{Source: stdOutSourceType, Text: outLine})
+		o.Logs = append(o.Logs, model.LogEntry{Source: stdOutSourceType, Text: outLine})
 	}
 
 	errLines := strings.Split(errStr, "\n")
@@ -63,11 +59,11 @@ func (o *Output) parseLogStrings(outStr, errStr string) error {
 			decoder := json.NewDecoder(strings.NewReader(errLine))
 			decoder.UseNumber()
 			_ = decoder.Decode(&jsonLine)
-			o.Logs = append(o.Logs, LogEntry{Source: stdErrSourceType, Json: jsonLine})
+			o.Logs = append(o.Logs, model.LogEntry{Source: stdErrSourceType, Json: jsonLine})
 			continue
 		}
 
-		o.Logs = append(o.Logs, LogEntry{Source: stdErrSourceType, Text: errLine})
+		o.Logs = append(o.Logs, model.LogEntry{Source: stdErrSourceType, Text: errLine})
 	}
 
 	return nil

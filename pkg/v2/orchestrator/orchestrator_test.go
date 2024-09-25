@@ -8,7 +8,6 @@ import (
 
 	"github.com/B-S-F/onyx/pkg/configuration"
 	"github.com/B-S-F/onyx/pkg/logger"
-	"github.com/B-S-F/onyx/pkg/v2/executor"
 	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -226,11 +225,11 @@ echo 'done transforming'`},
 							},
 							Result: &model.AutopilotResult{
 								StepResults: []model.StepResult{
-									{Logs: []string{"done writing"}, ID: "write", OutputDir: fmt.Sprintf("%s/chapter2_requirement2_check2/steps/write/files", dir)},
-									{Logs: []string{"done transforming"}, ID: "transform", OutputDir: fmt.Sprintf("%s/chapter2_requirement2_check2/steps/transform/files", dir), ResultFile: fmt.Sprintf("%s/chapter2_requirement2_check2/steps/transform/data.json", dir), InputDirs: []string{fmt.Sprintf("%s/chapter2_requirement2_check2/steps/write/files", dir)}},
+									{Logs: []model.LogEntry{{Source: "stdout", Text: "done writing"}}, ID: "write", OutputDir: fmt.Sprintf("%s/chapter2_requirement2_check2/steps/write/files", dir)},
+									{Logs: []model.LogEntry{{Source: "stdout", Text: "done transforming"}}, ID: "transform", OutputDir: fmt.Sprintf("%s/chapter2_requirement2_check2/steps/transform/files", dir), ResultFile: fmt.Sprintf("%s/chapter2_requirement2_check2/steps/transform/data.json", dir), InputDirs: []string{fmt.Sprintf("%s/chapter2_requirement2_check2/steps/write/files", dir)}},
 								},
 								EvaluateResult: model.EvaluateResult{
-									Results: []executor.Result{{
+									Results: []model.Result{{
 										Criterion:     "criteria1",
 										Fulfilled:     true,
 										Justification: "reason1",
@@ -240,9 +239,8 @@ echo 'done transforming'`},
 										},
 									}},
 									ExitCode: 0,
-									ErrLogs:  nil,
-									Logs: []string{
-										`{"status": "GREEN", "reason": "file matches", "result": {"criterion": "criteria1", "fulfilled": true, "justification": "reason1", "metadata": {"severity": "HIGH", "package": "package1"}}}`,
+									Logs: []model.LogEntry{
+										{Source: "stdout", Json: map[string]interface{}{"status": "GREEN", "reason": "file matches", "result": map[string]interface{}{"criterion": "criteria1", "fulfilled": true, "justification": "reason1", "metadata": map[string]interface{}{"severity": "HIGH", "package": "package1"}}}},
 									},
 									Status: "GREEN",
 									Reason: "file matches",
@@ -338,11 +336,11 @@ func simpleAutopilotCheck() model.AutopilotCheck {
 func simpleAutopilotCheckResult(dir string) *model.AutopilotResult {
 	return &model.AutopilotResult{
 		StepResults: []model.StepResult{
-			{Logs: []string{"done writing"}, ID: "write", OutputDir: fmt.Sprintf("%s/chapter_requirement_check/steps/write/files", dir)},
-			{Logs: []string{"done echoing"}, ID: "echo", OutputDir: fmt.Sprintf("%s/chapter_requirement_check/steps/echo/files", dir), ResultFile: fmt.Sprintf("%s/chapter_requirement_check/steps/echo/data.json", dir), InputDirs: []string{fmt.Sprintf("%s/chapter_requirement_check/steps/write/files", dir)}},
+			{Logs: []model.LogEntry{{Source: "stdout", Text: "done writing"}}, ID: "write", OutputDir: fmt.Sprintf("%s/chapter_requirement_check/steps/write/files", dir)},
+			{Logs: []model.LogEntry{{Source: "stdout", Text: "done echoing"}}, ID: "echo", OutputDir: fmt.Sprintf("%s/chapter_requirement_check/steps/echo/files", dir), ResultFile: fmt.Sprintf("%s/chapter_requirement_check/steps/echo/data.json", dir), InputDirs: []string{fmt.Sprintf("%s/chapter_requirement_check/steps/write/files", dir)}},
 		},
 		EvaluateResult: model.EvaluateResult{
-			Results: []executor.Result{{
+			Results: []model.Result{{
 				Criterion:     "criteria1",
 				Fulfilled:     true,
 				Justification: "reason1",
@@ -352,9 +350,8 @@ func simpleAutopilotCheckResult(dir string) *model.AutopilotResult {
 				},
 			}},
 			ExitCode: 0,
-			ErrLogs:  nil,
-			Logs: []string{
-				`{"status": "GREEN", "reason": "file matches", "result": {"criterion": "criteria1", "fulfilled": true, "justification": "reason1", "metadata": {"severity": "HIGH", "package": "package1"}}}`,
+			Logs: []model.LogEntry{
+				{Source: "stdout", Json: map[string]interface{}{"status": "GREEN", "reason": "file matches", "result": map[string]interface{}{"criterion": "criteria1", "fulfilled": true, "justification": "reason1", "metadata": map[string]interface{}{"severity": "HIGH", "package": "package1"}}}},
 			},
 			Status: "GREEN",
 			Reason: "file matches",

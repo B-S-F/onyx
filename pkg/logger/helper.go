@@ -1,8 +1,12 @@
 package logger
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/B-S-F/onyx/pkg/v2/model"
+	"github.com/pkg/errors"
 )
 
 type LogHelper struct {
@@ -40,4 +44,14 @@ func (h *LogHelper) LogFormatMapIndented(key string, value map[string]string, in
 	for k, v := range value {
 		h.logger.Info(fmt.Sprintf("%s%s: %s", strings.Repeat(" ", indent+2), k, v))
 	}
+}
+
+func (h *LogHelper) LogJsonLogEntry(l model.LogEntry, indent int) error {
+	jsonLog, err := json.Marshal(l)
+	if err != nil {
+		return errors.Wrap(err, "failed to json marshal log entry")
+	}
+
+	h.logger.Info(fmt.Sprintf("%s%s", strings.Repeat(" ", indent), string(jsonLog)))
+	return nil
 }
