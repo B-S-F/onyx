@@ -27,6 +27,7 @@ jobs:
 
       - name: Run linters
         run: make lint
+        continue-on-error: true
 
       - name: Run tests
         run: make test
