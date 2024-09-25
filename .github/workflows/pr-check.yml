@@ -1,0 +1,12 @@
+name: Doing PR check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-run-tests:
+    uses: ./.github/workflows/build-and-run-test-base.yml
+#    secrets:
+#      COVERAGE_BADGE_GIST_TOKEN: ${{ secrets.COVERAGE_BADGE_GIST_TOKEN }}
