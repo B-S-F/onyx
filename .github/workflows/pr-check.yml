@@ -8,5 +8,6 @@ on:
 jobs:
   build-and-run-tests:
     uses: ./.github/workflows/build-and-run-test-base.yml
-#    secrets:
+    secrets:
+      secrets: inherit
 #      COVERAGE_BADGE_GIST_TOKEN: ${{ secrets.COVERAGE_BADGE_GIST_TOKEN }}
