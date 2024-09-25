@@ -34,22 +34,17 @@ jobs:
 #      - name: Run tests with coverage
 #        run: make test-coverage
 
-      - name: GitHub App Auth
-        uses: TimoWilhelm/action-github-app-auth@v1.0.0
+      - name: Private actions checkout
+        uses: daspn/private-actions-checkout@v2
         with:
-          app-id: 1007791 #55262638
+          actions_list: '["B-S-F/github-actions@main"]'
+          checkout_base_path: ./.github/actions
+          app_id: 1007791
           private-key: ${{ secrets.ACCESS_ACTIONS_REPO_APP_PRIVATEKEY }}
-          set-git-credentials: true
-
-      - name: Checkout private action repository
-        uses: actions/checkout@v3
-        with:
-          repository: B-S-F/github-actions
-          path: ./private-github-actions
 
       - name: Create Code Coverage Summary
         id: coverage-summary
-        uses: ./private/github-actions/json-code-coverage-summary
+        uses: ./.github/actions/json-code-coverage-summary
         if: github.actor != 'depbot'
         with:
           filenames: ./coverage/coverage.json
