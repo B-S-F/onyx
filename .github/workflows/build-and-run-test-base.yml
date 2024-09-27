@@ -65,8 +65,8 @@ jobs:
         id: generate-token
         uses: tibdex/github-app-token@v1
         with:
-          app-id: 1009617
-          private-key: ${{ secrets.ACCESS_GIST_APP_PRIVATEKEY }}
+          app_id: 1009617
+          private_key: ${{ secrets.ACCESS_GIST_APP_PRIVATEKEY }}
 
       - name: Upload Coverage Badge data
 #        if: github.event_name == 'push' && github.actor != 'depbot'
