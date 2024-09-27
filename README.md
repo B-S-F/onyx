@@ -1,4 +1,4 @@
-![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/git3wid/6bf2099ffe34b1daa3e2c00571cc28f7/raw/986d482881eed180205bf967b286ecbc4ad83060/onyx-coverage-badge.json)
+![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/frank-bee/819f17e6f8166534e73c8acf9ee58726/raw/5feff5c9155b9d7e9218c41190684d071d99aed4/onyx-coverage-badge.json
 # ONYX
 
 Onyx interprets qg-config.yaml v1 files and performs the tasks specified therein.
