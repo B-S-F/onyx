@@ -61,8 +61,9 @@ jobs:
         with:
           path: code-coverage-results.md
 
-      - uses: actions/create-github-app-token@v1
-        id: app-token
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: tibdex/github-app-token@v1
         with:
           app-id: 1009617
           private-key: ${{ secrets.ACCESS_GIST_APP_PRIVATEKEY }}
@@ -82,4 +83,4 @@ jobs:
           gh gist edit ${{ env.COVERAGE_BADGE_GIST_ID }} -a onyx-coverage-badge.json
         env:
           COVERAGE_BADGE_GIST_ID: 819f17e6f8166534e73c8acf9ee58726
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
