@@ -2,9 +2,6 @@ name: Building and running tests
 
 on:
   workflow_call:
-    secrets:
-      COVERAGE_BADGE_GIST_TOKEN:
-        required: false
 
 env:
   MIN_COVERAGE: 50
@@ -35,11 +32,9 @@ jobs:
 
       - name: Run tests
         run: make test
-        continue-on-error: true
 
       - name: Run tests with coverage
         run: make test-coverage
-        continue-on-error: true
 
       - name: Private actions checkout
         uses: daspn/private-actions-checkout@v2
@@ -66,19 +61,25 @@ jobs:
         with:
           path: code-coverage-results.md
 
-#      - name: Upload Coverage Badge data
-#        if: github.event_name == 'push' && github.actor != 'depbot'
-#        run: |
-#          percentage=${{ steps.coverage-summary.outputs.total-coverage }}
-#          if [ $percentage -ge "${{ env.MAX_COVERAGE }}"  ]; then
-#            color="green"
-#          elif [ $percentage -ge "${{ env.MIN_COVERAGE }}" ]; then
-#            color="yellow"
-#          else
-#            color="red"
-#          fi
-#          jq -n --arg color "$color" --arg percentage "$percentage%" '{"schemaVersion": 1, "label": "Coverage", "message": $percentage, "color": $color}' > onyx-coverage-badge.json
-#          gh gist edit ${{ env.COVERAGE_BADGE_GIST_ID }} -a onyx-coverage-badge.json
-#        env:
-#          COVERAGE_BADGE_GIST_ID: ${{ vars.COVERAGE_BADGE_GIST_ID }}
-#          GITHUB_TOKEN: ${{ secrets.COVERAGE_BADGE_GIST_TOKEN }}
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: 1009617
+          private-key: ${{ secrets.ACCESS_GIST_APP_PRIVATEKEY }}
+
+      - name: Upload Coverage Badge data
+        if: github.event_name == 'push' && github.actor != 'depbot'
+        run: |
+          percentage=${{ steps.coverage-summary.outputs.total-coverage }}
+          if [ $percentage -ge "${{ env.MAX_COVERAGE }}"  ]; then
+            color="green"
+          elif [ $percentage -ge "${{ env.MIN_COVERAGE }}" ]; then
+            color="yellow"
+          else
+            color="red"
+          fi
+          jq -n --arg color "$color" --arg percentage "$percentage%" '{"schemaVersion": 1, "label": "Coverage", "message": $percentage, "color": $color}' > onyx-coverage-badge.json
+          gh gist edit ${{ env.COVERAGE_BADGE_GIST_ID }} -a onyx-coverage-badge.json
+        env:
+          COVERAGE_BADGE_GIST_ID: 819f17e6f8166534e73c8acf9ee58726
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
