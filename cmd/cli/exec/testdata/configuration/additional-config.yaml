@@ -1,3 +1,0 @@
-env: ${{ env.ADDITIONAL_CONFIG_ENV }}
-var: ${{ vars.ADDITIONAL_CONFIG_VAR }}
-secret: ${{ secrets.ADDITIONAL_CONFIG_SECRET }}
