@@ -61,13 +61,6 @@ jobs:
         with:
           path: code-coverage-results.md
 
-      - name: Generate GitHub App Token
-        id: generate-token
-        uses: tibdex/github-app-token@v1
-        with:
-          app_id: 1009617
-          private_key: ${{ secrets.ACCESS_GIST_APP_PRIVATEKEY }}
-
       - name: Upload Coverage Badge data
 #        if: github.event_name == 'push' && github.actor != 'depbot'
         run: |
@@ -83,4 +76,4 @@ jobs:
           gh gist edit ${{ env.COVERAGE_BADGE_GIST_ID }} -a onyx-coverage-badge.json
         env:
           COVERAGE_BADGE_GIST_ID: 819f17e6f8166534e73c8acf9ee58726
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.COVERAGE_BADGE_GIST_TOKEN }}
