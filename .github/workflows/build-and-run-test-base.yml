@@ -12,6 +12,10 @@ env:
 
 jobs:
   build-and-test:
+    permissions:
+      pull-requests: write
+      contents: read
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
