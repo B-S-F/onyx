@@ -68,7 +68,7 @@ jobs:
           private-key: ${{ secrets.ACCESS_GIST_APP_PRIVATEKEY }}
 
       - name: Upload Coverage Badge data
-        if: github.event_name == 'push' && github.actor != 'depbot'
+#        if: github.event_name == 'push' && github.actor != 'depbot'
         run: |
           percentage=${{ steps.coverage-summary.outputs.total-coverage }}
           if [ $percentage -ge "${{ env.MAX_COVERAGE }}"  ]; then
