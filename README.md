@@ -1,4 +1,5 @@
 ![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/frank-bee/819f17e6f8166534e73c8acf9ee58726/raw/onyx-coverage-badge.json)
+[![Doing Merge check](https://github.com/B-S-F/onyx/actions/workflows/merge-check.yml/badge.svg)](https://github.com/B-S-F/onyx/actions/workflows/merge-check.yml)
 # ONYX
 
 Onyx interprets qg-config.yaml v1 files and performs the tasks specified therein.
