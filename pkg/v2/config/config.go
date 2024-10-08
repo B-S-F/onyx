@@ -138,7 +138,7 @@ type Evaluate struct {
 	// Example
 	// 	# do evaluation of SharePoint metadata here
 	// 	# do evaluation of PDF signature data here
-	Run string `yaml:"run" json:"run" jsonschema:"required"`
+	Run string `yaml:"run" json:"run" jsonschema:"required,minLength=1"`
 }
 
 type Finalize struct {

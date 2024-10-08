@@ -234,7 +234,8 @@ chapters:
                             status: GREEN
                             reason: should be GREEN
                             results:
-                                - criterion: criterion
+                                - hash: 19d9338067c7b1aa3e17cc779bf90abe65b6e47da9eb7b798a48aff9ab9ea58b
+                                  criterion: criterion
                                   fulfilled: true
                                   justification: justified
                             configFiles:

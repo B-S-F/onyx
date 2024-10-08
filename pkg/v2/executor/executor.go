@@ -18,6 +18,10 @@ func StartRunner(workDir string, run string, env, secrets map[string]string, log
 		WorkDir: workDir,
 	}
 	out, err := scriptRunner.Execute(&input, timeout)
-	logger.Debug("output", zap.Any("output", out), zap.Error(err))
-	return out, err
+	if err != nil {
+		return nil, err
+	}
+
+	logger.Debug("output", zap.Any("output", out))
+	return out, nil
 }

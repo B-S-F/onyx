@@ -7,6 +7,7 @@ import (
 	"github.com/B-S-F/onyx/pkg/repository"
 	"github.com/B-S-F/onyx/pkg/repository/types/azblob"
 	"github.com/B-S-F/onyx/pkg/repository/types/curl"
+	"github.com/B-S-F/onyx/pkg/v2/model"
 )
 
 func initializeRepository(repositories []configuration.Repository) ([]repository.Repository, error) {
@@ -25,7 +26,7 @@ func initializeRepository(repositories []configuration.Repository) ([]repository
 		registryRepositories = append(registryRepositories, repository)
 	}
 	if len(parseErrs) > 0 {
-		return nil, fmt.Errorf("error initializing repositories: %v", parseErrs)
+		return nil, model.NewUserErr(fmt.Errorf("error initializing repositories: %v", parseErrs), "invalid repositories")
 	}
 	return registryRepositories, nil
 }

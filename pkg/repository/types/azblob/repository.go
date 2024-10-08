@@ -11,6 +11,7 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 	"github.com/B-S-F/onyx/pkg/repository"
 	"github.com/B-S-F/onyx/pkg/repository/app"
+	"github.com/B-S-F/onyx/pkg/v2/model"
 )
 
 type Repository struct {
@@ -58,7 +59,7 @@ func NewRepository(name string, installationPath string, config map[string]inter
 func (r *Repository) InstallApp(appReference *app.Reference) (app.App, error) {
 	appPath, err := r.getAppPath(appReference.Name, appReference.Version)
 	if err != nil {
-		return nil, fmt.Errorf("failed to install app %s: %w", appReference, err)
+		return nil, model.NewUserErr(fmt.Errorf("failed to install app %s: %w", appReference, err), "invalid app path")
 	}
 
 	ouputPath := app.InstallationPath(r.InstallationPath, r.RepoName, appReference.Name, appReference.Version)
