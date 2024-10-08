@@ -15,9 +15,10 @@ func init() {
 }
 
 type Settings struct {
-	Level   string
-	File    string
-	Secrets map[string]string
+	Level                 string
+	File                  string
+	Secrets               map[string]string
+	DisableConsoleLogging bool
 }
 
 type Log struct {

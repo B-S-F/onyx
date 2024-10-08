@@ -5,7 +5,6 @@ import (
 	"github.com/B-S-F/onyx/pkg/repository/registry"
 	"github.com/B-S-F/onyx/pkg/v2/model"
 	"github.com/B-S-F/onyx/pkg/v2/repository/app"
-	"github.com/pkg/errors"
 )
 
 func Initialize(ep *model.ExecutionPlan, repositories []repository.Repository) (*registry.Registry, error) {
@@ -14,7 +13,7 @@ func Initialize(ep *model.ExecutionPlan, repositories []repository.Repository) (
 	for _, appReference := range appReferences {
 		err := appRegistry.Install(appReference)
 		if err != nil {
-			return nil, errors.Wrap(err, "error adding app to registry")
+			return nil, err
 		}
 	}
 	return appRegistry, nil
